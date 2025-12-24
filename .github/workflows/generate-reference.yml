@@ -1,4 +1,3 @@
-
 name: Generate API reference from OpenAPI
 
 on:
@@ -29,7 +28,16 @@ jobs:
 
       - name: Generate Markdown
         run: |
-          python openapi_to_human.py examples/openapi-min.yaml -o examples/output.md
+          python openapi_to_human.py "examples/openapi-min.yaml" -o "examples/output.md"
+
+      - name: Verify output exists
+        run: |
+          echo "Listing examples/:"
+          ls -la "examples"
+          echo ""
+          echo "---- output.md (first 80 lines) ----"
+          test -f "examples/output.md"
+          sed -n '1,80p' "examples/output.md"
 
       - name: Upload generated Markdown
         uses: actions/upload-artifact@v4
