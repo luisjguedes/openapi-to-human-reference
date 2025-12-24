@@ -7,11 +7,17 @@ on:
     paths:
       - "openapi_to_human.py"
       - "requirements.txt"
-      - "examples/**"
+      - "examples/**/*.yml"
+      - "examples/**/*.yaml"
+    paths-ignore:
+      - "examples/output.md"
 
 jobs:
   generate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,19 +34,21 @@ jobs:
 
       - name: Generate Markdown
         run: |
-          python openapi_to_human.py "examples/openapi-min.yaml" -o "examples/output.md"
+          python openapi_to_human.py examples/openapi-min.yaml -o examples/output.md
 
-      - name: Verify output exists
+      - name: Commit output.md (if changed)
         run: |
-          echo "Listing examples/:"
-          ls -la "examples"
-          echo ""
-          echo "---- output.md (first 80 lines) ----"
-          test -f "examples/output.md"
-          sed -n '1,80p' "examples/output.md"
+          if [ -n "$(git status --porcelain examples/output.md)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add examples/output.md
+            git commit -m "chore: generate API reference (output.md)"
+            git push
+          else
+            echo "No changes in examples/output.md"
+          fi
 
-      - name: Upload generated Markdown
-        uses: actions/upload-artifact@v4
-        with:
-          name: openapi-human-reference-output
-          path: examples/output.md
+      - name: Show output preview
+        run: |
+          echo "---- output.md (first 80 lines) ----"
+          sed -n '1,80p' examples/output.md
