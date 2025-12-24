@@ -43,11 +43,10 @@ jobs:
           echo "---- examples/output.md (first 120 lines) ----"
           sed -n '1,120p' examples/output.md
 
-      - name: Commit generated Markdown back to repo (only when inputs changed)
+      - name: Commit generated Markdown back to repo
         run: |
-          # Only commit if changes exist AND they are not just output.md changes caused by an unrelated push.
-          # (This workflow already won't run on pushes that only touch examples/output.md)
-          if git diff --quiet; then
+          # Detect *any* changes, including untracked files like a brand-new output.md
+          if [[ -z "$(git status --porcelain)" ]]; then
             echo "No changes to commit."
             exit 0
           fi
@@ -56,7 +55,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           git add examples/output.md
-          git commit -m "chore: generate API reference from OpenAPI"
+
+          # If output.md is unchanged, git commit will fail — handle that gracefully
+          git commit -m "chore: generate API reference from OpenAPI" || {
+            echo "Nothing to commit (output unchanged)."
+            exit 0
+          }
+
           git push
 
       - name: Upload generated Markdown as artifact
