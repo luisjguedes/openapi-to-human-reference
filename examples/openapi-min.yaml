@@ -54,5 +54,5 @@ paths:
               example:
                 error:
                   code: invalid_request
-                  message: Missing required field: name
+                  message: "Missing required field: name"
                   request_id: req_01HZYXABCDE1234567890
