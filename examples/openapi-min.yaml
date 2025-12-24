@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Example API
+  version: 1.0.0
+  description: Minimal spec for openapi-to-human-reference.
+
+servers:
+  - url: https://api.example.com
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - bearerAuth: []
+
+paths:
+  /webhooks/hello:
+    post:
+      summary: Hello webhook
+      description: Returns a greeting message.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: Luís
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                ok: true
+                message: Hello Luís
+        "400":
+          description: Bad Request
