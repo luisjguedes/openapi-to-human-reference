@@ -4,10 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: ["main"]
-    paths:
-      - "openapi_to_human.py"
-      - "requirements.txt"
-      - "examples/**"
     paths-ignore:
       - "examples/output.md"
 
@@ -47,8 +43,10 @@ jobs:
           echo "---- examples/output.md (first 120 lines) ----"
           sed -n '1,120p' examples/output.md
 
-      - name: Commit generated Markdown back to repo
+      - name: Commit generated Markdown back to repo (only when inputs changed)
         run: |
+          # Only commit if changes exist AND they are not just output.md changes caused by an unrelated push.
+          # (This workflow already won't run on pushes that only touch examples/output.md)
           if git diff --quiet; then
             echo "No changes to commit."
             exit 0
