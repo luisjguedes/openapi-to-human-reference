@@ -48,4 +48,11 @@ paths:
                 ok: true
                 message: Hello Luís
         "400":
-          description: Bad Request
+          description: Bad Request (validation)
+          content:
+            application/json:
+              example:
+                error:
+                  code: invalid_request
+                  message: Missing required field: name
+                  request_id: req_01HZYXABCDE1234567890
