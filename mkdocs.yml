@@ -1,9 +1,10 @@
 site_name: openapi-to-human-reference
 site_description: Convert an OpenAPI spec into a clean, human-readable Markdown API reference.
 
-repo_name: openapi-to-human-reference
-repo_url: https://github.com/<YOUR_GITHUB_USERNAME>/openapi-to-human-reference
+repo_url: https://github.com/luisjguedes/openapi-to-human-reference
+repo_name: luisjguedes/openapi-to-human-reference
 edit_uri: edit/main/docs/
+
 
 nav:
   - Home: index.md
